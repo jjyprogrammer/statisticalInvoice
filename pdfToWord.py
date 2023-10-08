@@ -63,8 +63,13 @@ def getCatgoryMoney(file_path) :
     for line in text_list :
         if line.find(u'货物或应税劳务') != -1 :
             catgory = text_list[index + 1].split(' ')[0]
+        if line.find(u'项目名称') != -1 :
+            catgory = text_list[index + 1].split(' ')[0]
         if line.find(u'价税合计') != -1 :
-            money = float(line.split('¥')[1])
+            if len(line.split('￥')) >= 2 :
+                money = float(line.split('￥')[1])
+            if len(line.split('¥')) >= 2 :
+                money = float(line.split('¥')[1])
         index = index + 1
     return [catgory, money]
 
@@ -77,8 +82,9 @@ def main() :
             if name.endswith(".pdf") :
                 pdf_file_list.append(os.path.join(root, name));
     for file in pdf_file_list :
-        catgoryWithMoney = getCatgoryMoney(file)
         file_name = getFileName(file)
+        print(file_name)
+        catgoryWithMoney = getCatgoryMoney(file)
         if len(catgoryWithMoney[0]) == 0 :
             print(file , " has error")
             input("按下任意键退出程序")
